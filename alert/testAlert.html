@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <!-- 视口，屏幕的宽度1：1，不允许缩放 -->
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    
+    <!--  浏览器不缓存，每次都去服务器拉取 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	
+	<!-- 不自动识别手机号码 -->
+    <meta name="format-detection" content="telephone=no" >
+    
+    <title>测试弹框组件</title>
+    	
+    <style type="text/css">
+    	@-webkit-keyframes opacity {
+            0% {
+                opacity: 0; /*初始状态 透明度为0*/
+            }
+            50% {
+                opacity: 0; /*中间状态 透明度为0*/
+            }
+            100% {
+                opacity: 1; /*结尾状态 透明度为1*/
+            }
+        }
+
+        .li-opacity {
+            -webkit-animation-name: opacity; /*动画名称*/
+            -webkit-animation-iteration-count: 1; /*动画次数*/
+            -webkit-animation-delay: 0s; /*延迟时间*/
+        }
+        .alert-mask {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            left: 0%;
+            top: 0%;
+            z-index: 9998;
+            background-color: rgba(0,0,0,.7);
+        }
+        .alert-content {
+            position: fixed;
+            box-sizing: border-box;
+            border-radius: 4px;
+            z-index: 9999;
+            -webkit-transition: .4s;
+            -moz-transition: .4s;
+            transition: .4s;
+            display: none;
+        }
+        .alert-show {
+            display: block;
+        }
+        .alert-default {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+   <p class="alert" data-flag="fadeIn">fadeIn</p>
+   <p class="alert" data-flag="sideLeft">sideLeft</p>
+   <p class="alert" data-flag="scale">scale</p>
+   <p class="alert" data-flag="info">info</p>
+</body>
+<script src="/static/component/requirejs/require.min.js?v=20161017"></script>
+<script type="text/javascript">
+var script = document.createElement("script"),
+    head = document.head || document.getElementsByTagName('head')[0];
+
+script.type = "text/javascript";
+script.src = '/config.js?ver=' + (new Date()).getTime();
+
+head.appendChild(script); 
+
+script.onload = script.onreadystatechange = function(){
+    require(['jquery'],function($){
+    	require(['liAlert'],function(){
+            $('.alert').on('click',function(event){
+                $.alert({
+                    content: '<h1 style="display:flex;justify-content:center;">我是弹框</h1>',
+                    effect: $(event.currentTarget).attr('data-flag'),
+                    blankclose: true,
+                    //autoClose: true
+                })
+            })
+    	})
+    })
+}
+</script>
+</html>
