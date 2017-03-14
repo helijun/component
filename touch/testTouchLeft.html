@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <link rel="stylesheet" type="text/css" href="/static/li/li-1.2.0.css">
+    
+    <style type="text/css">
+        .pro-list {
+            position: relative;
+            color: white;
+            text-align: center;
+            margin-top: 100px;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 4;
+        }
+
+        .pro-list>.li-pro-main {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            background: pink;
+            transition: .4s;
+        }
+        .pro-list>.li-del-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20%;
+            height: 100%;
+            background-color: red;
+            z-index: 1;
+            transition: .4s;
+        }
+    </style>
+</head>
+<body>
+	<div class="li-module li-row pro-list">
+        <div class="li-pro-main">
+            左滑试试
+        </div>
+        <div class="li-del-btn">
+            删除
+        </div>
+    </div>
+
+</body>
+
+<script src="/static/component/requirejs/require.min.js"></script>
+<script type="text/javascript">
+var script = document.createElement("script"),
+    head = document.head || document.getElementsByTagName('head')[0];
+
+script.type = "text/javascript";
+script.src = '/config.js?ver=' + (new Date()).getTime();
+
+head.appendChild(script); 
+
+script.onload = script.onreadystatechange = function(){
+    require(['jquery','touch','li2'], function($){
+        var testTouchLeft = {
+            init: function(){
+                this.renderHtml();
+                this.watch();
+            },
+            renderHtml: function(){
+                this.overscroll(document.querySelector('.li-module'))
+            },
+
+            overscroll: function(el){
+                el.addEventListener('touchstart', function(event) {
+                    var top = el.scrollTop,
+                        totalScroll = el.scrollHeight,
+                        currentScroll = top + el.offsetHeight;
+                    
+                    if(top === 0) {
+                        el.scrollTop = 1;
+                    }else if(currentScroll === totalScroll) {
+                        el.scrollTop = top - 1;
+                    }
+
+                    window.touchMain.touchStart(event);
+                });
+                el.addEventListener('touchmove', function(event) {
+                    if(el.offsetHeight < el.scrollHeight)
+                        event.isScroller = true;
+                });
+            },
+
+            watch: function(){
+                $('.li-del-btn').on('click',function(){
+                    $('.li-pro-main,.li-del-btn,.pro-list').css('height',0)
+
+                    setTimeout(function(){
+                        $('.li-pro-main,.li-del-btn,.pro-list').remove();
+
+                        $.successShow('删除成功')
+                    },400)
+                })
+
+
+                document.body.addEventListener('touchmove', function(event) {
+                    if(!event.isScroller) {
+                        event.preventDefault();
+                    }
+
+                    window.touchMain.touchMove2(event,function(){
+                        $('.li-pro-main').css({
+                            'left':'-20%'
+                        })
+                    },function(){
+                        $('.li-pro-main').css({
+                            'left':'0%'
+                        })
+                    })
+                })
+            }
+        }
+        testTouchLeft.init();
+    })
+}
+</script>
+</html>
